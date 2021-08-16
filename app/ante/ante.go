@@ -77,6 +77,29 @@ func NewAnteHandler(
 						NewEthIncrementSenderSequenceDecorator(ak), // innermost AnteDecorator.
 					)
 
+				case "/ethermint.types.v1alpha1.ExtensionOptionsWeb3Tx":
+					// handle as normal Cosmos SDK tx, except signature is checked for EIP712 representation
+
+					switch tx.(type) {
+					case sdk.Tx:
+						anteHandler = sdk.ChainAnteDecorators(
+							authante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+							authante.NewMempoolFeeDecorator(),
+							authante.NewValidateBasicDecorator(),
+							authante.TxTimeoutHeightDecorator{},
+							authante.NewValidateMemoDecorator(ak),
+							authante.NewConsumeGasForTxSizeDecorator(ak),
+							authante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
+							authante.NewValidateSigCountDecorator(ak),
+							NewDeductFeeDecorator(ak, bankKeeper), // overidden for fee delegation
+							authante.NewSigGasConsumeDecorator(ak, DefaultSigVerificationGasConsumer),
+							NewEip712SigVerificationDecorator(ak, signModeHandler), // overidden for EIP712 Tx signatures
+							authante.NewIncrementSequenceDecorator(ak),             // innermost AnteDecorator
+						)
+					default:
+						return ctx, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "invalid transaction type: %T", tx)
+					}
+
 				default:
 					return ctx, stacktrace.Propagate(
 						sdkerrors.Wrap(sdkerrors.ErrUnknownExtensionOptions, typeURL),

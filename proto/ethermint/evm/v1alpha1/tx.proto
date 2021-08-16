@@ -148,8 +148,6 @@ message ExtensionOptionsEthereumTx {
   option (gogoproto.goproto_getters) = false;
 }
 
-message ExtensionOptionsWeb3Tx { option (gogoproto.goproto_getters) = false; }
-
 // MsgEthereumTxResponse defines the Msg/EthereumTx response type.
 message MsgEthereumTxResponse {
   option (gogoproto.goproto_getters) = false;

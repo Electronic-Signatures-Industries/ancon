@@ -25,7 +25,6 @@
     - [AccessListTx](#ethermint.evm.v1alpha1.AccessListTx)
     - [DynamicFeeTx](#ethermint.evm.v1alpha1.DynamicFeeTx)
     - [ExtensionOptionsEthereumTx](#ethermint.evm.v1alpha1.ExtensionOptionsEthereumTx)
-    - [ExtensionOptionsWeb3Tx](#ethermint.evm.v1alpha1.ExtensionOptionsWeb3Tx)
     - [LegacyTx](#ethermint.evm.v1alpha1.LegacyTx)
     - [MsgEthereumTx](#ethermint.evm.v1alpha1.MsgEthereumTx)
     - [MsgEthereumTxResponse](#ethermint.evm.v1alpha1.MsgEthereumTxResponse)
@@ -62,6 +61,9 @@
   
 - [ethermint/types/v1alpha1/account.proto](#ethermint/types/v1alpha1/account.proto)
     - [EthAccount](#ethermint.types.v1alpha1.EthAccount)
+  
+- [ethermint/types/v1alpha1/web3.proto](#ethermint/types/v1alpha1/web3.proto)
+    - [ExtensionOptionsWeb3Tx](#ethermint.types.v1alpha1.ExtensionOptionsWeb3Tx)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -390,16 +392,6 @@ DynamicFeeTx is the data of EIP-1559 dinamic fee transactions.
 <a name="ethermint.evm.v1alpha1.ExtensionOptionsEthereumTx"></a>
 
 ### ExtensionOptionsEthereumTx
-
-
-
-
-
-
-
-<a name="ethermint.evm.v1alpha1.ExtensionOptionsWeb3Tx"></a>
-
-### ExtensionOptionsWeb3Tx
 
 
 
@@ -918,6 +910,39 @@ authtypes.BaseAccount type. It is compatible with the auth AccountKeeper.
 | ----- | ---- | ----- | ----------- |
 | `base_account` | [cosmos.auth.v1beta1.BaseAccount](#cosmos.auth.v1beta1.BaseAccount) |  |  |
 | `code_hash` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ethermint/types/v1alpha1/web3.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ethermint/types/v1alpha1/web3.proto
+
+
+
+<a name="ethermint.types.v1alpha1.ExtensionOptionsWeb3Tx"></a>
+
+### ExtensionOptionsWeb3Tx
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `typedDataChainID` | [uint64](#uint64) |  | typedDataChainID used only in EIP712 Domain and should match Ethereum network ID in a Web3 provider (e.g. Metamask). |
+| `feePayer` | [string](#string) |  | feePayer is an account address for the fee payer. It will be validated during EIP712 signature checking. |
+| `feePayerSig` | [bytes](#bytes) |  | feePayerSig is a signature data from the fee paying account, allows to perform fee delegation when using EIP712 Domain. |
 
 
 
