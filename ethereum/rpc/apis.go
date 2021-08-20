@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/rpc"
 
 	"github.com/tharsis/ethermint/ethereum/rpc/backend"
+	"github.com/tharsis/ethermint/ethereum/rpc/namespaces/ancon"
 	"github.com/tharsis/ethermint/ethereum/rpc/namespaces/debug"
 	"github.com/tharsis/ethermint/ethereum/rpc/namespaces/eth"
 	"github.com/tharsis/ethermint/ethereum/rpc/namespaces/eth/filters"
@@ -31,6 +32,7 @@ const (
 	TxPoolNamespace   = "txpool"
 	DebugNamespace    = "debug"
 	MinerNamespace    = "miner"
+	AnconNamespace    = "ancon"
 
 	apiVersion = "1.0"
 )
@@ -112,6 +114,15 @@ func GetRPCAPIs(ctx *server.Context, clientCtx client.Context, tmWSClient *rpccl
 					Namespace: MinerNamespace,
 					Version:   apiVersion,
 					Service:   miner.NewMinerAPI(ctx, clientCtx, evmBackend),
+					Public:    true,
+				},
+			)
+		case AnconNamespace:
+			apis = append(apis,
+				rpc.API{
+					Namespace: AnconNamespace,
+					Version:   apiVersion,
+					Service:   ancon.NewAnconAPI(ctx, clientCtx, evmBackend),
 					Public:    true,
 				},
 			)
