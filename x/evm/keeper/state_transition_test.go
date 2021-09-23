@@ -13,7 +13,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/tharsis/ethermint/tests"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/tests"
 )
 
 func (suite *KeeperTestSuite) TestGetHashFn() {

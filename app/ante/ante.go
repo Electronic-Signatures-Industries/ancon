@@ -18,8 +18,8 @@ import (
 	channelkeeper "github.com/cosmos/ibc-go/modules/core/04-channel/keeper"
 	ibcante "github.com/cosmos/ibc-go/modules/core/ante"
 
-	"github.com/tharsis/ethermint/crypto/ethsecp256k1"
-	evmtypes "github.com/tharsis/ethermint/x/evm/types"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/crypto/ethsecp256k1"
+	evmtypes "github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/types"
 )
 
 const (

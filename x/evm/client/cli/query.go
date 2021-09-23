@@ -1,13 +1,13 @@
 package cli
 
 import (
+	rpctypes "github.com/Electronic-Signatures-Industries/ancon-evm/ethereum/rpc/types"
 	"github.com/spf13/cobra"
-	rpctypes "github.com/tharsis/ethermint/ethereum/rpc/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	"github.com/tharsis/ethermint/x/evm/types"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/types"
 )
 
 // GetQueryCmd returns the parent command for all x/bank CLi query commands.

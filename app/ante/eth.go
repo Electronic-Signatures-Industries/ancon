@@ -9,9 +9,9 @@ import (
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/palantir/stacktrace"
 
-	ethermint "github.com/tharsis/ethermint/types"
-	evmkeeper "github.com/tharsis/ethermint/x/evm/keeper"
-	evmtypes "github.com/tharsis/ethermint/x/evm/types"
+	ethermint "github.com/Electronic-Signatures-Industries/ancon-evm/types"
+	evmkeeper "github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/keeper"
+	evmtypes "github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"

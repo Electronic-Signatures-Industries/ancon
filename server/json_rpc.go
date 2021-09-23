@@ -8,13 +8,13 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
+	"github.com/Electronic-Signatures-Industries/ancon-evm/ethereum/rpc"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/server/types"
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
-	"github.com/tharsis/ethermint/ethereum/rpc"
 
-	"github.com/tharsis/ethermint/server/config"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/server/config"
 )
 
 // StartJSONRPC starts the JSON-RPC server

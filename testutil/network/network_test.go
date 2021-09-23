@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/tharsis/ethermint/testutil/network"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/testutil/network"
 )
 
 type IntegrationTestSuite struct {

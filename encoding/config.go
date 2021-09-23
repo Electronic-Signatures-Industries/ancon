@@ -11,8 +11,8 @@ import (
 
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 
-	enccodec "github.com/tharsis/ethermint/encoding/codec"
-	evmtypes "github.com/tharsis/ethermint/x/evm/types"
+	enccodec "github.com/Electronic-Signatures-Industries/ancon-evm/encoding/codec"
+	evmtypes "github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/types"
 )
 
 // MakeConfig creates an EncodingConfig for testing

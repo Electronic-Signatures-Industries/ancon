@@ -49,11 +49,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/tharsis/ethermint/app"
-	"github.com/tharsis/ethermint/crypto/hd"
-	"github.com/tharsis/ethermint/encoding"
-	srvconfig "github.com/tharsis/ethermint/server/config"
-	ethermint "github.com/tharsis/ethermint/types"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/app"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/crypto/hd"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/encoding"
+	srvconfig "github.com/Electronic-Signatures-Industries/ancon-evm/server/config"
+	ethermint "github.com/Electronic-Signatures-Industries/ancon-evm/types"
 )
 
 // package-wide network lock to only allow one test network at a time

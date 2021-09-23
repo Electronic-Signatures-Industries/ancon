@@ -5,10 +5,10 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
+	"github.com/Electronic-Signatures-Industries/ancon-evm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/tharsis/ethermint/types"
 )
 
 var _ paramtypes.ParamSet = &Params{}

@@ -11,8 +11,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ethermint "github.com/tharsis/ethermint/types"
-	"github.com/tharsis/ethermint/x/evm/types"
+	ethermint "github.com/Electronic-Signatures-Industries/ancon-evm/types"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/types"
 )
 
 // Not valid Ethereum address

@@ -10,9 +10,9 @@ import (
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/ethereum/go-ethereum/common"
 
+	ethermint "github.com/Electronic-Signatures-Industries/ancon-evm/types"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/types"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	ethermint "github.com/tharsis/ethermint/types"
-	"github.com/tharsis/ethermint/x/evm/types"
 )
 
 func SetupContract(b *testing.B) (*KeeperTestSuite, common.Address) {

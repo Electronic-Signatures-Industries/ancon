@@ -13,8 +13,8 @@ import (
 	"github.com/palantir/stacktrace"
 	"github.com/tendermint/tendermint/libs/log"
 
-	ethermint "github.com/tharsis/ethermint/types"
-	"github.com/tharsis/ethermint/x/evm/types"
+	ethermint "github.com/Electronic-Signatures-Industries/ancon-evm/types"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/types"
 )
 
 // Keeper grants access to the EVM module state and implements the go-ethereum StateDB interface.

@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/Electronic-Signatures-Industries/ancon-evm/tests"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/tharsis/ethermint/tests"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"

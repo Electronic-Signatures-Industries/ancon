@@ -15,7 +15,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/stretchr/testify/require"
 
-	rpctypes "github.com/tharsis/ethermint/ethereum/rpc/types"
+	rpctypes "github.com/Electronic-Signatures-Industries/ancon-evm/ethereum/rpc/types"
 )
 
 // func TestMain(m *testing.M) {

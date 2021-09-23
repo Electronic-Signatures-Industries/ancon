@@ -13,8 +13,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 
-	cryptocodec "github.com/tharsis/ethermint/crypto/codec"
-	ethermint "github.com/tharsis/ethermint/types"
+	cryptocodec "github.com/Electronic-Signatures-Industries/ancon-evm/crypto/codec"
+	ethermint "github.com/Electronic-Signatures-Industries/ancon-evm/types"
 )
 
 func init() {

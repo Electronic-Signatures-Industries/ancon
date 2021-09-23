@@ -11,8 +11,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	ethermint "github.com/tharsis/ethermint/types"
-	"github.com/tharsis/ethermint/x/evm/types"
+	ethermint "github.com/Electronic-Signatures-Industries/ancon-evm/types"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
@@ -287,7 +287,7 @@ func (k *Keeper) ApplyMessage(evm *vm.EVM, msg core.Message, cfg *params.ChainCo
 	if query {
 		// gRPC query handlers don't go through the AnteHandler to deduct the gas fee from the sender or have access historical state.
 		// We don't refund gas to the sender.
-		// For more info, see: https://github.com/tharsis/ethermint/issues/229 and https://github.com/cosmos/cosmos-sdk/issues/9636
+		// For more info, see: https://github.com/Electronic-Signatures-Industries/ancon-evm/issues/229 and https://github.com/cosmos/cosmos-sdk/issues/9636
 		gasConsumed := msg.Gas() - leftoverGas
 		leftoverGas += k.GasToRefund(gasConsumed, refundQuotient)
 	} else {

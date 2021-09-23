@@ -11,7 +11,7 @@ ETHERMINT_BINARY = ethermintd
 ETHERMINT_DIR = ethermint
 BUILDDIR ?= $(CURDIR)/build
 SIMAPP = ./app
-HTTPS_GIT := https://github.com/tharsis/ethermint.git
+HTTPS_GIT := https://github.com/Electronic-Signatures-Industries/ancon-evm.git
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
 
@@ -262,7 +262,7 @@ update-swagger-docs: statik
 .PHONY: update-swagger-docs
 
 godocs:
-	@echo "--> Wait a few seconds and visit http://localhost:6060/pkg/github.com/tharsis/ethermint/types"
+	@echo "--> Wait a few seconds and visit http://localhost:6060/pkg/github.com/Electronic-Signatures-Industries/ancon-evm/types"
 	godoc -http=:6060
 
 # Start docs site at localhost:8080
@@ -545,7 +545,7 @@ localnet-show-logstream:
 ###                                Releasing                                ###
 ###############################################################################
 
-PACKAGE_NAME:=github.com/tharsis/ethermint
+PACKAGE_NAME:=github.com/Electronic-Signatures-Industries/ancon-evm
 GOLANG_CROSS_VERSION  = v1.17
 release-dry-run:
 	docker run \

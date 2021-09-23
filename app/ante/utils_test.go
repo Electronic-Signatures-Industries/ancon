@@ -19,11 +19,11 @@ import (
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/tharsis/ethermint/app"
-	ante "github.com/tharsis/ethermint/app/ante"
-	"github.com/tharsis/ethermint/encoding"
-	"github.com/tharsis/ethermint/tests"
-	evmtypes "github.com/tharsis/ethermint/x/evm/types"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/app"
+	ante "github.com/Electronic-Signatures-Industries/ancon-evm/app/ante"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/encoding"
+	"github.com/Electronic-Signatures-Industries/ancon-evm/tests"
+	evmtypes "github.com/Electronic-Signatures-Industries/ancon-evm/x/evm/types"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
