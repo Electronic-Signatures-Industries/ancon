@@ -1,4 +1,4 @@
-module github.com/tharsis/ethermint
+module github.com/Electronic-Signatures-Industries/ancon-evm
 
 go 1.17
 
