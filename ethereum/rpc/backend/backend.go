@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
+	"github.com/ethereum/go-ethereum/params"
 	tmrpctypes "github.com/tendermint/tendermint/rpc/core/types"
 
 	"google.golang.org/grpc"
@@ -29,6 +30,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 
+	"github.com/Electronic-Signatures-Industries/ancon-evm/ethereum/rpc/namespaces/eth/filters"
 	"github.com/Electronic-Signatures-Industries/ancon-evm/ethereum/rpc/types"
 	"github.com/Electronic-Signatures-Industries/ancon-evm/server/config"
 	ethermint "github.com/Electronic-Signatures-Industries/ancon-evm/types"
@@ -42,6 +44,7 @@ type Backend interface {
 	GetBlockByNumber(blockNum types.BlockNumber, fullTx bool) (map[string]interface{}, error)
 	GetBlockByHash(hash common.Hash, fullTx bool) (map[string]interface{}, error)
 	GetTendermintBlockByNumber(blockNum types.BlockNumber) (*tmrpctypes.ResultBlock, error)
+	CurrentHeader() *ethtypes.Header
 	HeaderByNumber(blockNum types.BlockNumber) (*ethtypes.Header, error)
 	HeaderByHash(blockHash common.Hash) (*ethtypes.Header, error)
 	PendingTransactions() ([]*sdk.Tx, error)
@@ -57,9 +60,14 @@ type Backend interface {
 	EstimateGas(args evmtypes.CallArgs, blockNrOptional *types.BlockNumber) (hexutil.Uint64, error)
 	RPCGasCap() uint64
 	RPCMinGasPrice() int64
+	ChainConfig() *params.ChainConfig
+	SuggestGasTipCap() (*big.Int, error)
+	GetFilteredBlocks(from int64, to int64, filter [][]filters.BloomIV, filterAddresses bool) ([]int64, error)
 }
 
 var _ Backend = (*EVMBackend)(nil)
+
+var bAttributeKeyEthereumBloom = []byte(evmtypes.AttributeKeyEthereumBloom)
 
 // EVMBackend implements the Backend interface
 type EVMBackend struct {
@@ -121,6 +129,11 @@ func (e *EVMBackend) GetBlockByNumber(blockNum types.BlockNumber, fullTx bool) (
 		return nil, err
 	}
 
+	// return if requested block height is greater than the current one
+	if resBlock == nil || resBlock.Block == nil {
+		return nil, nil
+	}
+
 	res, err := e.EthBlockFromTendermint(resBlock.Block, fullTx)
 	if err != nil {
 		e.logger.Debug("EthBlockFromTendermint failed", "height", blockNum, "error", err.Error())
@@ -164,18 +177,17 @@ func (e *EVMBackend) GetTendermintBlockByNumber(blockNum types.BlockNumber) (*tm
 		height = 1
 	default:
 		if blockNum < 0 {
-			err := errors.Errorf("incorrect block height: %d", height)
-			return nil, err
-		} else if height > int64(currentBlockNumber) {
+			return nil, errors.Errorf("cannot fetch a negative block height: %d", height)
+		}
+		if height > int64(currentBlockNumber) {
 			return nil, nil
 		}
 	}
 
 	resBlock, err := e.clientCtx.Client.Block(e.ctx, &height)
 	if err != nil {
-		// e.logger.Debug("GetBlockByNumber safely bumping down from %d to latest", height)
 		if resBlock, err = e.clientCtx.Client.Block(e.ctx, nil); err != nil {
-			e.logger.Debug("GetBlockByNumber failed to get latest block", "error", err.Error())
+			e.logger.Debug("tendermint client failed to get latest block", "height", height, "error", err.Error())
 			return nil, nil
 		}
 	}
@@ -184,6 +196,7 @@ func (e *EVMBackend) GetTendermintBlockByNumber(blockNum types.BlockNumber) (*tm
 		e.logger.Debug("GetBlockByNumber block not found", "height", height)
 		return nil, nil
 	}
+
 	return resBlock, nil
 }
 
@@ -199,7 +212,7 @@ func (e *EVMBackend) BlockBloom(height *int64) (ethtypes.Bloom, error) {
 		}
 
 		for _, attr := range event.Attributes {
-			if bytes.Equal(attr.Key, []byte(evmtypes.AttributeKeyEthereumBloom)) {
+			if bytes.Equal(attr.Key, bAttributeKeyEthereumBloom) {
 				return ethtypes.BytesToBloom(attr.Value), nil
 			}
 		}
@@ -272,9 +285,16 @@ func (e *EVMBackend) EthBlockFromTendermint(
 		ConsAddress: sdk.ConsAddress(block.Header.ProposerAddress).String(),
 	}
 
-	res, err := e.queryClient.ValidatorAccount(e.ctx, req)
+	ctx := types.ContextWithHeight(block.Height)
+
+	res, err := e.queryClient.ValidatorAccount(ctx, req)
 	if err != nil {
-		e.logger.Debug("failed to query validator operator address", "cons-address", req.ConsAddress, "error", err.Error())
+		e.logger.Debug(
+			"failed to query validator operator address",
+			"height", block.Height,
+			"cons-address", req.ConsAddress,
+			"error", err.Error(),
+		)
 		return nil, err
 	}
 
@@ -285,7 +305,7 @@ func (e *EVMBackend) EthBlockFromTendermint(
 
 	validatorAddr := common.BytesToAddress(addr)
 
-	gasLimit, err := types.BlockMaxGasFromConsensusParams(types.ContextWithHeight(block.Height), e.clientCtx)
+	gasLimit, err := types.BlockMaxGasFromConsensusParams(ctx, e.clientCtx)
 	if err != nil {
 		e.logger.Error("failed to query consensus params", "error", err.Error())
 	}
@@ -304,6 +324,12 @@ func (e *EVMBackend) EthBlockFromTendermint(
 
 	formattedBlock := types.FormatBlock(block.Header, block.Size(), gasLimit, new(big.Int).SetUint64(gasUsed), ethRPCTxs, bloom, validatorAddr)
 	return formattedBlock, nil
+}
+
+// CurrentHeader returns the latest block header
+func (e *EVMBackend) CurrentHeader() *ethtypes.Header {
+	header, _ := e.HeaderByNumber(types.EthLatestBlockNumber)
+	return header
 }
 
 // HeaderByNumber returns the block header identified by height.
@@ -699,17 +725,98 @@ func (e *EVMBackend) RPCGasCap() uint64 {
 	return e.cfg.JSONRPC.GasCap
 }
 
-// RPCMinGasPrice return the minimum gas price for a transaction.
+// RPCMinGasPrice returns the minimum gas price for a transaction obtained from
+// the node config. If set value is 0, it will default to 20.
+
 func (e *EVMBackend) RPCMinGasPrice() int64 {
 	evmParams, err := e.queryClient.Params(context.Background(), &evmtypes.QueryParamsRequest{})
-	if err == nil {
-		minGasPrice := e.cfg.GetMinGasPrices()
-		for _, coin := range minGasPrice {
-			if coin.Denom == evmParams.Params.EvmDenom {
-				return coin.Amount.TruncateInt64()
-			}
-		}
+	if err != nil {
+		return ethermint.DefaultGasPrice
 	}
 
-	return ethermint.DefaultGasPrice
+	minGasPrice := e.cfg.GetMinGasPrices()
+	amt := minGasPrice.AmountOf(evmParams.Params.EvmDenom).TruncateInt64()
+	if amt == 0 {
+		return ethermint.DefaultGasPrice
+	}
+
+	return amt
+}
+
+// ChainConfig return the ethereum chain configuration
+func (e *EVMBackend) ChainConfig() *params.ChainConfig {
+	params, err := e.queryClient.Params(e.ctx, &evmtypes.QueryParamsRequest{})
+	if err != nil {
+		return nil
+	}
+
+	return params.Params.ChainConfig.EthereumConfig(e.chainID)
+}
+
+// SuggestGasTipCap returns the suggested tip cap
+func (e *EVMBackend) SuggestGasTipCap() (*big.Int, error) {
+	// TODO: implement
+	return big.NewInt(1), nil
+}
+
+// GetFilteredBlocks returns the block height list match the given bloom filters.
+func (e *EVMBackend) GetFilteredBlocks(
+	from int64,
+	to int64,
+	filters [][]filters.BloomIV,
+	filterAddresses bool,
+) ([]int64, error) {
+	matchedBlocks := make([]int64, 0)
+
+BLOCKS:
+	for height := from; height <= to; height++ {
+		if err := e.ctx.Err(); err != nil {
+			e.logger.Error("EVMBackend context error", "err", err)
+			return nil, err
+		}
+
+		h := height
+		bloom, err := e.BlockBloom(&h)
+		if err != nil {
+			e.logger.Error("retrieve header failed", "blockHeight", height, "err", err)
+			return nil, err
+		}
+
+		for i, filter := range filters {
+			// filter the header bloom with the addresses
+			if filterAddresses && i == 0 {
+				if !checkMatches(bloom, filter) {
+					continue BLOCKS
+				}
+
+				// the filter doesn't have any topics
+				if len(filters) == 1 {
+					matchedBlocks = append(matchedBlocks, height)
+					continue BLOCKS
+				}
+				continue
+			}
+
+			// filter the bloom with topics
+			if len(filter) > 0 && !checkMatches(bloom, filter) {
+				continue BLOCKS
+			}
+		}
+		matchedBlocks = append(matchedBlocks, height)
+	}
+
+	return matchedBlocks, nil
+}
+
+// checkMatches revised the function from
+// https://github.com/ethereum/go-ethereum/blob/401354976bb44f0ad4455ca1e0b5c0dc31d9a5f5/core/types/bloom9.go#L88
+func checkMatches(bloom ethtypes.Bloom, filter []filters.BloomIV) bool {
+	for _, bloomIV := range filter {
+		if bloomIV.V[0] == bloomIV.V[0]&bloom[bloomIV.I[0]] &&
+			bloomIV.V[1] == bloomIV.V[1]&bloom[bloomIV.I[1]] &&
+			bloomIV.V[2] == bloomIV.V[2]&bloom[bloomIV.I[2]] {
+			return true
+		}
+	}
+	return false
 }
