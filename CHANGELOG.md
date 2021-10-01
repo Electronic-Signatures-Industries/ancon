@@ -37,6 +37,17 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ## Unreleased
 
+### Improvements
+
+* (deps) [tharsis#610](https://github.com/tharsis/ethermint/pull/610) Bump Cosmos SDK to [v0.44.1](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.44.1).
+
+### Bug Fixes
+
+* (rpc) [tharsis#611](https://github.com/tharsis/ethermint/pull/611) Fix panic on JSON-RPC when querying for an invalid block height.
+* (cmd) [tharsis#483](https://github.com/tharsis/ethermint/pull/483) Use config values on genesis accounts.
+
+## [v0.6.0] - 2021-09-29
+
 ### State Machine Breaking
 
 * (app) [tharsis#476](https://github.com/tharsis/ethermint/pull/476) Update Bech32 HRP to `ethm`.
@@ -56,6 +67,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Bug Fixes
 
+* (rpc, server) [tharsis#600](https://github.com/tharsis/ethermint/pull/600) Add TLS configuration for websocket API
+* (rpc) [tharsis#598](https://github.com/tharsis/ethermint/pull/598) Check truncation when creating a `BlockNumber` from `big.Int`
+* (evm) [tharsis#597](https://github.com/tharsis/ethermint/pull/597) Check for `uint64` -> `int64` block height overflow on `GetHashFn`
 * (evm) [tharsis#579](https://github.com/tharsis/ethermint/pull/579) Update `DeriveChainID` function to handle `v` signature values `< 35`.
 * (encoding) [tharsis#478](https://github.com/tharsis/ethermint/pull/478) Register `Evidence` to amino codec.
 * (rpc) [tharsis#478](https://github.com/tharsis/ethermint/pull/481) Getting the node configuration when calling the `miner` rpc methods.
@@ -65,6 +79,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 * (evm) [tharsis#461](https://github.com/tharsis/ethermint/pull/461) Increase performance of `StateDB` transaction log storage (r/w).
 * (evm) [tharsis#566](https://github.com/tharsis/ethermint/pull/566) Introduce `stateErr` store in `StateDB` to avoid meaningless operations if any error happened before
+* (rpc, evm) [tharsis#587](https://github.com/tharsis/ethermint/pull/587) Apply bloom filter when query ethlogs with range of blocks
 * (evm) [tharsis#586](https://github.com/tharsis/ethermint/pull/586) Benchmark evm keeper
 
 ## [v0.5.0] - 2021-08-20
